@@ -5,6 +5,20 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>F4ke R0ll no mi.</title>
   <link rel="stylesheet" href="css/style.css">
+
+  <!-- CORREÇÃO: aplica tema/nitidez/animação ANTES da primeira pintura,
+       evitando o "flash" do tema Midnight em quem usa Light/Dark. -->
+  <script>
+    (() => {
+      try {
+        const r = document.documentElement;
+        const g = key => localStorage.getItem(key);
+        r.dataset.theme = g("einzbern-roulette-theme") || "midnight";
+        r.dataset.sharpness = g("einzbern-roulette-sharpness") || "balanced";
+        r.dataset.animation = g("einzbern-roulette-animation") || "ambient";
+      } catch {}
+    })();
+  </script>
 </head>
 
 <body>
@@ -13,76 +27,28 @@
        ANIMATED THEME
        ================================================== -->
 
-  <video
-    id="animatedTheme"
-    class="animated-theme"
-    autoplay
-    muted
-    loop
-    playsinline
-    preload="metadata"
-    aria-hidden="true"
-  ></video>
-
-  <div
-    id="animatedThemeOverlay"
-    class="animated-theme-overlay"
-    aria-hidden="true"
-  ></div>
-
+  <video id="animatedTheme" class="animated-theme" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
+  <div id="animatedThemeOverlay" class="animated-theme-overlay" aria-hidden="true"></div>
 
   <main>
 
     <header>
 
       <div>
-
         <h1>F4ke R0ll no mi.</h1>
-
-        <p class="sub">
-          Decision engine — projetos primeiro, distrações depois.
-        </p>
-
+        <p class="sub">Decision engine — projetos primeiro, distrações depois.</p>
       </div>
-
 
       <div class="header-controls">
 
-        <div
-          class="visual-tabs"
-          role="tablist"
-          aria-label="Configurações visuais"
-        >
-
-          <button
-            type="button"
-            class="visual-tab active"
-            data-tab="roulette"
-          >
-            Roleta
-          </button>
-
-          <button
-            type="button"
-            class="visual-tab"
-            data-tab="visual"
-          >
-            Visual
-          </button>
-
-          <button
-            type="button"
-            class="visual-tab"
-            data-tab="animated"
-          >
-            Animated
-          </button>
-
+        <!-- CORREÇÃO: role="tablist" exige filhos role="tab" (+ aria-selected) -->
+        <div class="visual-tabs" role="tablist" aria-label="Configurações visuais">
+          <button type="button" class="visual-tab active" role="tab" aria-selected="true"  data-tab="roulette">Roleta</button>
+          <button type="button" class="visual-tab"        role="tab" aria-selected="false" data-tab="visual">Visual</button>
+          <button type="button" class="visual-tab"        role="tab" aria-selected="false" data-tab="animated">Animated</button>
         </div>
 
-        <div class="small muted">
-          Persistência local automática
-        </div>
+        <div class="small muted">Persistência local automática</div>
 
       </div>
 
@@ -96,138 +62,49 @@
     <div id="visualPanel" class="visual-panel hidden">
 
       <div class="visual-section">
-
         <div>
           <div class="small muted">Tema</div>
           <strong>Aparência</strong>
         </div>
-
         <div class="visual-options">
-
-          <button
-            type="button"
-            class="visual-option"
-            data-theme-option="midnight"
-          >
-            Midnight
-          </button>
-
-          <button
-            type="button"
-            class="visual-option"
-            data-theme-option="dark"
-          >
-            Dark
-          </button>
-
-          <button
-            type="button"
-            class="visual-option"
-            data-theme-option="light"
-          >
-            Light
-          </button>
-
+          <button type="button" class="visual-option" data-theme-option="midnight">Midnight</button>
+          <button type="button" class="visual-option" data-theme-option="dark">Dark</button>
+          <button type="button" class="visual-option" data-theme-option="light">Light</button>
         </div>
-
       </div>
 
-
       <div class="visual-section">
-
         <div>
           <div class="small muted">Nitidez da UI</div>
           <strong>Interface</strong>
         </div>
-
         <div class="visual-options">
-
-          <button
-            type="button"
-            class="visual-option"
-            data-sharpness-option="soft"
-          >
-            Soft
-          </button>
-
-          <button
-            type="button"
-            class="visual-option"
-            data-sharpness-option="balanced"
-          >
-            Balanced
-          </button>
-
-          <button
-            type="button"
-            class="visual-option"
-            data-sharpness-option="crisp"
-          >
-            Crisp
-          </button>
-
+          <button type="button" class="visual-option" data-sharpness-option="soft">Soft</button>
+          <button type="button" class="visual-option" data-sharpness-option="balanced">Balanced</button>
+          <button type="button" class="visual-option" data-sharpness-option="crisp">Crisp</button>
         </div>
-
       </div>
 
-
       <div class="visual-section">
-
         <div>
           <div class="small muted">Interface</div>
           <strong>Clean UI</strong>
         </div>
-
         <div class="visual-options">
-
-          <button
-            type="button"
-            class="visual-option"
-            id="cleanUiToggle"
-          >
-            Ativar
-          </button>
-
+          <button type="button" class="visual-option" id="cleanUiToggle">Ativar</button>
         </div>
-
       </div>
 
-
       <div class="visual-section">
-
         <div>
           <div class="small muted">Animação</div>
           <strong>Atmosfera</strong>
         </div>
-
         <div class="visual-options">
-
-          <button
-            type="button"
-            class="visual-option"
-            data-animation-option="static"
-          >
-            Static
-          </button>
-
-          <button
-            type="button"
-            class="visual-option"
-            data-animation-option="ambient"
-          >
-            Ambient
-          </button>
-
-          <button
-            type="button"
-            class="visual-option"
-            data-animation-option="cinematic"
-          >
-            Cinematic
-          </button>
-
+          <button type="button" class="visual-option" data-animation-option="static">Static</button>
+          <button type="button" class="visual-option" data-animation-option="ambient">Ambient</button>
+          <button type="button" class="visual-option" data-animation-option="cinematic">Cinematic</button>
         </div>
-
       </div>
 
     </div>
@@ -240,111 +117,38 @@
     <div id="animatedPanel" class="visual-panel hidden">
 
       <div class="visual-section">
-
         <div>
           <div class="small muted">Animated Theme</div>
           <strong>Wallpaper externo</strong>
         </div>
-
         <div class="visual-options">
-
-          <button
-            type="button"
-            class="visual-option"
-            id="animatedThemeToggle"
-          >
-            Ativar
-          </button>
-
-          <button
-            type="button"
-            class="visual-option active"
-            id="animatedThemeDefault"
-          >
-            Minecraft Night
-          </button>
-
-          <button
-            type="button"
-            class="visual-option"
-            data-animated-preset="rain"
-          >
-            Rain
-          </button>
-
-          <button
-            type="button"
-            class="visual-option"
-            data-animated-preset="aurora"
-          >
-            Aurora
-          </button>
-
-          <button
-            type="button"
-            class="visual-option"
-            data-animated-preset="void"
-          >
-            Void
-          </button>
-
-          <button
-            type="button"
-            class="visual-option"
-            id="animatedThemeHumidRainy"
-          >
-            Humid Rainy Street
-          </button>
-
+          <button type="button" class="visual-option" id="animatedThemeToggle">Ativar</button>
+          <!-- CORREÇÃO: não nasce mais com "active" (o estado vem do JS) -->
+          <button type="button" class="visual-option" id="animatedThemeDefault">Minecraft Night</button>
+          <button type="button" class="visual-option" data-animated-preset="rain">Rain</button>
+          <button type="button" class="visual-option" data-animated-preset="aurora">Aurora</button>
+          <button type="button" class="visual-option" data-animated-preset="void">Void</button>
+          <button type="button" class="visual-option" id="animatedThemeHumidRainy">Humid Rainy Street</button>
         </div>
-
       </div>
 
-
       <div class="visual-section animated-url-section">
-
         <div>
           <div class="small muted">Fonte</div>
           <strong>URL do vídeo</strong>
         </div>
-
         <div class="animated-url-control">
-
-          <input
-            id="animatedThemeUrl"
-            type="url"
-            placeholder="https://..."
-            autocomplete="off"
-          >
-
-          <button
-            type="button"
-            class="primary"
-            id="animatedThemeApply"
-          >
-            Aplicar
-          </button>
-
+          <input id="animatedThemeUrl" type="url" placeholder="https://..." autocomplete="off">
+          <button type="button" class="primary" id="animatedThemeApply">Aplicar</button>
         </div>
-
       </div>
 
-
       <div class="visual-section">
-
         <div>
           <div class="small muted">Estado</div>
-
-          <strong id="animatedThemeStatus">
-            Desativado
-          </strong>
-
+          <strong id="animatedThemeStatus">Desativado</strong>
         </div>
-
-        <div class="small muted">
-          Vídeo externo · loop · muted
-        </div>
-
+        <div class="small muted">Vídeo externo · loop · muted</div>
       </div>
 
     </div>
@@ -364,18 +168,10 @@
 
           <div id="cats" class="cats"></div>
 
-          <hr
-            style="border:0;border-top:1px solid var(--line);margin:18px 0"
-          >
+          <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
 
-          <div class="small muted">
-            Ciclo atual
-          </div>
-
-          <div
-            id="progress"
-            style="margin-top:5px"
-          ></div>
+          <div class="small muted">Ciclo atual</div>
+          <div id="progress" style="margin-top:5px"></div>
 
         </section>
 
@@ -383,105 +179,38 @@
         <section class="panel">
 
           <div class="row between">
-
             <div>
-
-              <div class="small muted">
-                Categoria selecionada
-              </div>
-
-              <h2 id="title">
-                Jogos
-              </h2>
-
-              <div
-                id="count"
-                class="small muted"
-              ></div>
-
+              <div class="small muted">Categoria selecionada</div>
+              <h2 id="title">Jogos</h2>
+              <div id="count" class="small muted"></div>
             </div>
-
-            <button id="resetCycle">
-              ↻ Novo ciclo
-            </button>
-
+            <button type="button" id="resetCycle">↻ Novo ciclo</button>
           </div>
 
-
           <form id="addForm">
-
-            <input
-              id="newItem"
-              placeholder="Adicionar opção..."
-              autocomplete="off"
-            >
-
-            <button class="primary">
-              + Adicionar
-            </button>
-
+            <input id="newItem" placeholder="Adicionar opção..." autocomplete="off">
+            <button class="primary">+ Adicionar</button>
           </form>
 
+          <div id="list" class="list"></div>
 
-          <div
-            id="list"
-            class="list"
-          ></div>
-
-
-          <div
-            class="center"
-            style="margin-top:18px"
-          >
+          <div class="center" style="margin-top:18px">
 
             <div class="wheel-wrap">
-
               <div class="pointer"></div>
-
-              <div
-                id="wheel"
-                class="wheel"
-              ></div>
-
+              <div id="wheel" class="wheel"></div>
             </div>
 
+            <button type="button" id="spin" class="primary" style="font-size:17px;padding:12px 28px">GIRAR</button>
 
-            <button
-              id="spin"
-              class="primary"
-              style="font-size:17px;padding:12px 28px"
-            >
-              GIRAR
-            </button>
-
-
-            <div
-              id="result"
-              class="result"
-            >
-              <span class="muted">
-                Nenhum resultado.
-              </span>
+            <div id="result" class="result">
+              <span class="muted">Nenhum resultado.</span>
             </div>
 
-
-            <div
-              id="resultActions"
-              class="actions hidden"
-            >
-
-              <button id="confirm">
-                ✓ Confirmar
-              </button>
-
-              <button id="reject">
-                ↩ Rejeitar
-              </button>
-
-              <button id="cancel">
-                ✕ Cancelar
-              </button>
-
+            <div id="resultActions" class="actions hidden">
+              <button type="button" id="confirm">✓ Confirmar</button>
+              <button type="button" id="reject">↩ Rejeitar</button>
+              <button type="button" id="cancel">✕ Cancelar</button>
             </div>
 
           </div>
@@ -503,703 +232,292 @@
        ================================================== -->
 
   <script>
-
     (() => {
 
-      const THEME_KEY =
-        "einzbern-roulette-theme";
+      const THEME_KEY        = "einzbern-roulette-theme";
+      const SHARPNESS_KEY    = "einzbern-roulette-sharpness";
+      const ANIMATION_KEY    = "einzbern-roulette-animation";
+      const CLEAN_UI_KEY     = "einzbern-roulette-clean-ui";
+      const ANIMATED_KEY     = "einzbern-roulette-animated-theme";
+      const ANIMATED_URL_KEY = "einzbern-roulette-animated-url";
+      const PRESET_KEY       = "einzbern-roulette-animated-preset";
 
-      const SHARPNESS_KEY =
-        "einzbern-roulette-sharpness";
-
-      const ANIMATION_KEY =
-        "einzbern-roulette-animation";
-
-      const CLEAN_UI_KEY =
-        "einzbern-roulette-clean-ui";
-
-      const ANIMATED_KEY =
-        "einzbern-roulette-animated-theme";
-
-      const ANIMATED_URL_KEY =
-        "einzbern-roulette-animated-url";
-
-
-      const DEFAULT_ANIMATED_URL =
-        "https://motionbgs.com/dl/hd/3668";
-
+      const DEFAULT_ANIMATED_URL = "https://motionbgs.com/dl/hd/3668";
       const HUMID_RAINY_STREET_URL =
         "assets/animated/humid-rainy-street-neverness-to-everness.mp4";
 
+      /* CORREÇÃO: localStorage pode lançar exceção (modo privado, acesso
+         bloqueado). Antes, isso derrubava TODO o sistema visual na inicialização. */
+      const store = {
+        get(key)        { try { return localStorage.getItem(key); } catch { return null; } },
+        set(key, value) { try { localStorage.setItem(key, value); } catch {} },
+        del(key)        { try { localStorage.removeItem(key); } catch {} }
+      };
 
-      const root =
-        document.documentElement;
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-      const tabs =
-        document.querySelectorAll(".visual-tab");
+      const root = document.documentElement;
 
-      const roulettePanel =
-        document.getElementById("roulettePanel");
+      const tabs          = document.querySelectorAll(".visual-tab");
+      const roulettePanel = document.getElementById("roulettePanel");
+      const visualPanel   = document.getElementById("visualPanel");
+      const animatedPanel = document.getElementById("animatedPanel");
 
-      const visualPanel =
-        document.getElementById("visualPanel");
+      const themeOptions     = document.querySelectorAll("[data-theme-option]");
+      const sharpnessOptions = document.querySelectorAll("[data-sharpness-option]");
+      const animationOptions = document.querySelectorAll("[data-animation-option]");
+      const cleanUiToggle    = document.getElementById("cleanUiToggle");
 
-      const animatedPanel =
-        document.getElementById("animatedPanel");
-
-
-      const themeOptions =
-        document.querySelectorAll(
-          "[data-theme-option]"
-        );
-
-      const sharpnessOptions =
-        document.querySelectorAll(
-          "[data-sharpness-option]"
-        );
-
-      const animationOptions =
-        document.querySelectorAll(
-          "[data-animation-option]"
-        );
-
-      const cleanUiToggle =
-        document.getElementById("cleanUiToggle");
+      const animatedTheme            = document.getElementById("animatedTheme");
+      const animatedThemeToggle      = document.getElementById("animatedThemeToggle");
+      const animatedThemeDefault     = document.getElementById("animatedThemeDefault");
+      const animatedThemeHumidRainy  = document.getElementById("animatedThemeHumidRainy");
+      const animatedPresetOptions    = document.querySelectorAll("[data-animated-preset]");
+      const animatedThemeUrl         = document.getElementById("animatedThemeUrl");
+      const animatedThemeApply       = document.getElementById("animatedThemeApply");
+      const animatedThemeStatus      = document.getElementById("animatedThemeStatus");
 
 
-      const animatedTheme =
-        document.getElementById(
-          "animatedTheme"
-        );
-
-      const animatedThemeToggle =
-        document.getElementById(
-          "animatedThemeToggle"
-        );
-
-      const animatedThemeDefault =
-        document.getElementById(
-          "animatedThemeDefault"
-        );
-
-      const animatedThemeHumidRainy =
-        document.getElementById(
-          "animatedThemeHumidRainy"
-        );
-
-      const animatedPresetOptions =
-        document.querySelectorAll(
-          "[data-animated-preset]"
-        );
-
-      const animatedThemeUrl =
-        document.getElementById(
-          "animatedThemeUrl"
-        );
-
-      const animatedThemeApply =
-        document.getElementById(
-          "animatedThemeApply"
-        );
-
-      const animatedThemeStatus =
-        document.getElementById(
-          "animatedThemeStatus"
-        );
-
+      /* ---------- Tema / nitidez / Clean UI / atmosfera ---------- */
 
       function applyTheme(theme) {
+        if (!["midnight", "dark", "light"].includes(theme)) theme = "midnight";
 
-        const valid = [
-          "midnight",
-          "dark",
-          "light"
-        ];
+        root.dataset.theme = theme;
+        store.set(THEME_KEY, theme);
 
-        if (!valid.includes(theme)) {
-          theme = "midnight";
-        }
-
-        root.dataset.theme =
-          theme;
-
-        localStorage.setItem(
-          THEME_KEY,
-          theme
+        themeOptions.forEach(button =>
+          button.classList.toggle("active", button.dataset.themeOption === theme)
         );
-
-        themeOptions.forEach(button => {
-
-          button.classList.toggle(
-            "active",
-            button.dataset.themeOption === theme
-          );
-
-        });
-
       }
-
 
       function applySharpness(sharpness) {
+        if (!["soft", "balanced", "crisp"].includes(sharpness)) sharpness = "balanced";
 
-        const valid = [
-          "soft",
-          "balanced",
-          "crisp"
-        ];
+        root.dataset.sharpness = sharpness;
+        store.set(SHARPNESS_KEY, sharpness);
 
-        if (!valid.includes(sharpness)) {
-          sharpness = "balanced";
-        }
-
-        root.dataset.sharpness =
-          sharpness;
-
-        localStorage.setItem(
-          SHARPNESS_KEY,
-          sharpness
+        sharpnessOptions.forEach(button =>
+          button.classList.toggle("active", button.dataset.sharpnessOption === sharpness)
         );
-
-        sharpnessOptions.forEach(button => {
-
-          button.classList.toggle(
-            "active",
-            button.dataset.sharpnessOption === sharpness
-          );
-
-        });
-
       }
 
-
+      /* ATENÇÃO: define data-clean-ui, mas o CSS não tem nenhuma regra para
+         esse atributo — hoje o botão só troca o próprio rótulo. */
       function applyCleanUi(active) {
-
-        root.dataset.cleanUi =
-          active ? "active" : "inactive";
-
-        localStorage.setItem(
-          CLEAN_UI_KEY,
-          active ? "true" : "false"
-        );
+        root.dataset.cleanUi = active ? "active" : "inactive";
+        store.set(CLEAN_UI_KEY, active ? "true" : "false");
 
         if (cleanUiToggle) {
-
-          cleanUiToggle.classList.toggle(
-            "active",
-            active
-          );
-
-          cleanUiToggle.textContent =
-            active ? "Desativar" : "Ativar";
-
+          cleanUiToggle.classList.toggle("active", active);
+          cleanUiToggle.textContent = active ? "Desativar" : "Ativar";
         }
-
       }
-
 
       function applyAnimation(animation) {
+        if (!["static", "ambient", "cinematic"].includes(animation)) animation = "ambient";
 
-        const valid = [
-          "static",
-          "ambient",
-          "cinematic"
-        ];
+        root.dataset.animation = animation;
+        store.set(ANIMATION_KEY, animation);
 
-        if (!valid.includes(animation)) {
-          animation = "ambient";
-        }
-
-        root.dataset.animation =
-          animation;
-
-        localStorage.setItem(
-          ANIMATION_KEY,
-          animation
+        animationOptions.forEach(button =>
+          button.classList.toggle("active", button.dataset.animationOption === animation)
         );
-
-        animationOptions.forEach(button => {
-
-          button.classList.toggle(
-            "active",
-            button.dataset.animationOption === animation
-          );
-
-        });
-
       }
 
 
+      /* ---------- Abas ---------- */
+
       function setPanel(panel) {
-
-        roulettePanel.classList.toggle(
-          "hidden",
-          panel !== "roulette"
-        );
-
-        visualPanel.classList.toggle(
-          "hidden",
-          panel !== "visual"
-        );
-
-        animatedPanel.classList.toggle(
-          "hidden",
-          panel !== "animated"
-        );
+        roulettePanel.classList.toggle("hidden", panel !== "roulette");
+        visualPanel.classList.toggle("hidden", panel !== "visual");
+        animatedPanel.classList.toggle("hidden", panel !== "animated");
 
         tabs.forEach(tab => {
-
-          tab.classList.toggle(
-            "active",
-            tab.dataset.tab === panel
-          );
-
+          const selected = tab.dataset.tab === panel;
+          tab.classList.toggle("active", selected);
+          tab.setAttribute("aria-selected", String(selected));
         });
 
         const target =
-          panel === "visual"
-            ? visualPanel
-            : panel === "animated"
-              ? animatedPanel
-              : null;
+          panel === "visual"   ? visualPanel :
+          panel === "animated" ? animatedPanel : null;
 
         if (target) {
-
-          target.classList.remove(
-            "visual-panel-enter"
-          );
-
+          target.classList.remove("visual-panel-enter");
           void target.offsetWidth;
-
-          target.classList.add(
-            "visual-panel-enter"
-          );
-
+          target.classList.add("visual-panel-enter");
         }
-
       }
 
-
-      tabs.forEach(tab => {
-
-        tab.addEventListener(
-          "click",
-          () => setPanel(
-            tab.dataset.tab
-          )
-        );
-
-      });
-
-
-      sharpnessOptions.forEach(button => {
-
-        button.addEventListener(
-          "click",
-          () => applySharpness(
-            button.dataset.sharpnessOption
-          )
-        );
-
-      });
-
-
-      animationOptions.forEach(button => {
-
-        button.addEventListener(
-          "click",
-          () => applyAnimation(
-            button.dataset.animationOption
-          )
-        );
-
-      });
-
-
+      tabs.forEach(tab =>
+        tab.addEventListener("click", () => setPanel(tab.dataset.tab))
+      );
+      themeOptions.forEach(button =>
+        button.addEventListener("click", () => applyTheme(button.dataset.themeOption))
+      );
+      sharpnessOptions.forEach(button =>
+        button.addEventListener("click", () => applySharpness(button.dataset.sharpnessOption))
+      );
+      animationOptions.forEach(button =>
+        button.addEventListener("click", () => applyAnimation(button.dataset.animationOption))
+      );
       if (cleanUiToggle) {
-
-        cleanUiToggle.addEventListener(
-          "click",
-          () => applyCleanUi(
-            root.dataset.cleanUi !== "active"
-          )
+        cleanUiToggle.addEventListener("click", () =>
+          applyCleanUi(root.dataset.cleanUi !== "active")
         );
-
       }
 
 
-      themeOptions.forEach(button => {
-
-        button.addEventListener(
-          "click",
-          () => applyTheme(
-            button.dataset.themeOption
-          )
-        );
-
-      });
-
+      /* ---------- Animated Theme ---------- */
 
       function updateAnimatedStatus(active) {
-
-        animatedThemeStatus.textContent =
-          active
-            ? "Ativado"
-            : "Desativado";
-
-        animatedThemeToggle.textContent =
-          active
-            ? "Desativar"
-            : "Ativar";
-
-        animatedThemeToggle.classList.toggle(
-          "active",
-          active
-        );
-
+        animatedThemeStatus.textContent = active ? "Ativado" : "Desativado";
+        animatedThemeToggle.textContent = active ? "Desativar" : "Ativar";
+        animatedThemeToggle.classList.toggle("active", active);
       }
-
 
       function setAnimatedPreset(activePreset) {
-
-        animatedPresetOptions.forEach(button => {
-
-          button.classList.toggle(
-            "active",
-            button.dataset.animatedPreset === activePreset
-          );
-
-        });
-
-        animatedThemeDefault.classList.toggle(
-          "active",
-          activePreset === "minecraft"
+        animatedPresetOptions.forEach(button =>
+          button.classList.toggle("active", button.dataset.animatedPreset === activePreset)
         );
-
-        animatedThemeHumidRainy.classList.toggle(
-          "active",
-          activePreset === "humid-rainy-street"
-        );
-
+        animatedThemeDefault.classList.toggle("active", activePreset === "minecraft");
+        animatedThemeHumidRainy.classList.toggle("active", activePreset === "humid-rainy-street");
       }
 
-
       function applyAnimatedTheme(url, preset = null) {
-
         if (!url) return;
 
         animatedTheme.src = url;
-
         animatedTheme.load();
 
-        animatedTheme.play()
-          .catch(() => {});
-
-        root.dataset.animated =
-          "active";
-
-        localStorage.setItem(
-          ANIMATED_URL_KEY,
-          url
-        );
-
-        localStorage.setItem(
-          ANIMATED_KEY,
-          "true"
-        );
-
-        if (preset) {
-
-          localStorage.setItem(
-            "einzbern-roulette-animated-preset",
-            preset
-          );
-
+        /* CORREÇÃO: respeita "reduzir movimento" (antes o vídeo sempre tocava) */
+        if (reduceMotion.matches) {
+          animatedTheme.pause();
         } else {
-
-          localStorage.removeItem(
-            "einzbern-roulette-animated-preset"
-          );
-
+          animatedTheme.play().catch(() => {});
         }
 
-        root.dataset.animatedPreset =
-          preset || "";
+        root.dataset.animated = "active";
+        root.dataset.animatedPreset = preset || "";
 
-        setAnimatedPreset(
-          preset || null
-        );
+        store.set(ANIMATED_URL_KEY, url);
+        store.set(ANIMATED_KEY, "true");
 
+        if (preset) store.set(PRESET_KEY, preset);
+        else store.del(PRESET_KEY);
+
+        setAnimatedPreset(preset);
         updateAnimatedStatus(true);
-
       }
 
+      function stopVideo() {
+        animatedTheme.pause();
+        animatedTheme.removeAttribute("src");
+        animatedTheme.load();
+      }
 
       function disableAnimatedTheme() {
+        stopVideo();
 
-        animatedTheme.pause();
+        root.dataset.animated = "inactive";
+        root.dataset.animatedPreset = "";
+        store.set(ANIMATED_KEY, "false");
+        store.del(PRESET_KEY);
 
-        animatedTheme.removeAttribute(
-          "src"
-        );
-
-        animatedTheme.load();
-
-        root.dataset.animated =
-          "inactive";
-
-        localStorage.setItem(
-          ANIMATED_KEY,
-          "false"
-        );
-
+        /* CORREÇÃO: antes os botões de preset continuavam "ativos" com o
+           estado em "Desativado". */
+        setAnimatedPreset(null);
         updateAnimatedStatus(false);
-
       }
 
-
-      animatedThemeToggle.addEventListener(
-        "click",
-        () => {
-
-          const active =
-            root.dataset.animated === "active";
-
-          if (active) {
-
-            disableAnimatedTheme();
-
-          } else {
-
-            const url =
-              animatedThemeUrl.value.trim() ||
-              DEFAULT_ANIMATED_URL;
-
-            applyAnimatedTheme(url);
-
-          }
-
+      animatedThemeToggle.addEventListener("click", () => {
+        if (root.dataset.animated === "active") {
+          disableAnimatedTheme();
+        } else {
+          applyAnimatedTheme(animatedThemeUrl.value.trim() || DEFAULT_ANIMATED_URL);
         }
+      });
+
+      animatedThemeDefault.addEventListener("click", () => {
+        animatedThemeUrl.value = DEFAULT_ANIMATED_URL;
+        applyAnimatedTheme(DEFAULT_ANIMATED_URL, "minecraft");
+      });
+
+      animatedThemeHumidRainy.addEventListener("click", () => {
+        animatedThemeUrl.value = HUMID_RAINY_STREET_URL;
+        applyAnimatedTheme(HUMID_RAINY_STREET_URL, "humid-rainy-street");
+      });
+
+      animatedPresetOptions.forEach(button =>
+        button.addEventListener("click", () => {
+          const preset = button.dataset.animatedPreset;
+
+          stopVideo();
+
+          root.dataset.animated = "active";
+          root.dataset.animatedPreset = preset;
+
+          store.set(PRESET_KEY, preset);
+          store.set(ANIMATED_KEY, "true");
+
+          setAnimatedPreset(preset);
+          updateAnimatedStatus(true);
+        })
       );
 
+      animatedThemeApply.addEventListener("click", () => {
+        const url = animatedThemeUrl.value.trim();
+        if (!url) return;
+        applyAnimatedTheme(url);
+      });
 
-      animatedThemeDefault.addEventListener(
-        "click",
-        () => {
-
-          animatedThemeUrl.value =
-            DEFAULT_ANIMATED_URL;
-
-          applyAnimatedTheme(
-            DEFAULT_ANIMATED_URL,
-            "minecraft"
-          );
-
+      animatedThemeUrl.addEventListener("keydown", event => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          animatedThemeApply.click();
         }
-      );
+      });
 
-
-      animatedThemeHumidRainy.addEventListener(
-        "click",
-        () => {
-
-          animatedThemeUrl.value =
-            HUMID_RAINY_STREET_URL;
-
-          applyAnimatedTheme(
-            HUMID_RAINY_STREET_URL,
-            "humid-rainy-street"
-          );
-
+      animatedTheme.addEventListener("error", () => {
+        /* o evento também dispara se o src for removido; só avisa se houver src */
+        if (animatedTheme.getAttribute("src")) {
+          animatedThemeStatus.textContent = "Falha ao carregar";
         }
-      );
-
-
-      animatedPresetOptions.forEach(button => {
-
-        button.addEventListener(
-          "click",
-          () => {
-
-            const preset =
-              button.dataset.animatedPreset;
-
-            root.dataset.animatedPreset =
-              preset;
-
-            localStorage.setItem(
-              "einzbern-roulette-animated-preset",
-              preset
-            );
-
-            localStorage.setItem(
-              ANIMATED_KEY,
-              "true"
-            );
-
-            animatedTheme.pause();
-
-            animatedTheme.removeAttribute(
-              "src"
-            );
-
-            animatedTheme.load();
-
-            root.dataset.animated =
-              "active";
-
-            setAnimatedPreset(
-              preset
-            );
-
-            updateAnimatedStatus(
-              true
-            );
-
-          }
-        );
-
       });
 
 
-      animatedThemeApply.addEventListener(
-        "click",
-        () => {
+      /* ---------- Inicialização ---------- */
 
-          const url =
-            animatedThemeUrl.value.trim();
+      applyCleanUi(store.get(CLEAN_UI_KEY) === "true");
+      applyTheme(store.get(THEME_KEY) || "midnight");
+      applySharpness(store.get(SHARPNESS_KEY) || "balanced");
+      applyAnimation(store.get(ANIMATION_KEY) || "ambient");
 
-          if (!url) return;
+      const savedUrl    = store.get(ANIMATED_URL_KEY) || DEFAULT_ANIMATED_URL;
+      const savedState  = store.get(ANIMATED_KEY) === "true";
+      const savedPreset = store.get(PRESET_KEY);
 
-          applyAnimatedTheme(url);
+      animatedThemeUrl.value = savedUrl;
 
-        }
-      );
-
-
-      animatedThemeUrl.addEventListener(
-        "keydown",
-        event => {
-
-          if (event.key === "Enter") {
-
-            event.preventDefault();
-
-            animatedThemeApply.click();
-
-          }
-
-        }
-      );
-
-
-      animatedTheme.addEventListener(
-        "error",
-        () => {
-
-          animatedThemeStatus.textContent =
-            "Falha ao carregar";
-
-        }
-      );
-
-
-      applyCleanUi(
-        localStorage.getItem(CLEAN_UI_KEY) === "true"
-      );
-
-      applyTheme(
-        localStorage.getItem(
-          THEME_KEY
-        ) || "midnight"
-      );
-
-      applySharpness(
-        localStorage.getItem(
-          SHARPNESS_KEY
-        ) || "balanced"
-      );
-
-      applyAnimation(
-        localStorage.getItem(
-          ANIMATION_KEY
-        ) || "ambient"
-      );
-
-
-      const savedAnimatedUrl =
-        localStorage.getItem(
-          ANIMATED_URL_KEY
-        ) || DEFAULT_ANIMATED_URL;
-
-      animatedThemeUrl.value =
-        savedAnimatedUrl;
-
-
-      const savedAnimatedState =
-        localStorage.getItem(
-          ANIMATED_KEY
-        ) === "true";
-
-      const savedAnimatedPreset =
-        localStorage.getItem(
-          "einzbern-roulette-animated-preset"
-        );
-
-
-      if (
-        savedAnimatedState &&
-        savedAnimatedPreset
-      ) {
-
-        root.dataset.animatedPreset =
-          savedAnimatedPreset;
-
-        root.dataset.animated =
-          "active";
-
-        setAnimatedPreset(
-          savedAnimatedPreset
-        );
-
+      if (savedState && savedPreset === "minecraft") {
+        applyAnimatedTheme(savedUrl, "minecraft");
+      } else if (savedState && savedPreset === "humid-rainy-street") {
+        applyAnimatedTheme(HUMID_RAINY_STREET_URL, "humid-rainy-street");
+      } else if (savedState && savedPreset) {
+        /* presets só de CSS (rain / aurora / void): sem vídeo */
+        root.dataset.animated = "active";
+        root.dataset.animatedPreset = savedPreset;
+        setAnimatedPreset(savedPreset);
         updateAnimatedStatus(true);
-
-
-        if (
-          savedAnimatedPreset ===
-          "minecraft"
-        ) {
-
-          applyAnimatedTheme(
-            savedAnimatedUrl,
-            "minecraft"
-          );
-
-        } else if (
-          savedAnimatedPreset ===
-          "humid-rainy-street"
-        ) {
-
-          applyAnimatedTheme(
-            HUMID_RAINY_STREET_URL,
-            "humid-rainy-street"
-          );
-
-        }
-
-      } else if (savedAnimatedState) {
-
-        applyAnimatedTheme(
-          savedAnimatedUrl
-        );
-
+      } else if (savedState) {
+        applyAnimatedTheme(savedUrl);
       } else {
-
+        setAnimatedPreset(null);
         updateAnimatedStatus(false);
-
       }
 
     })();
-
   </script>
 
 </body>

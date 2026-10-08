@@ -1,9 +1,10 @@
 /* ==================================================
    F4ke R0ll No mi — V1.0.9
-   app.js — Reconstructed
+   app.js — Reconstructed (corrigido)
    ================================================== */
 
 const KEY = "einzbern-roulette-v1";
+const MAX_VISIBLE = 5;
 
 const defaultData = {
   categories: {
@@ -22,6 +23,45 @@ const defaultData = {
   }
 };
 
+const WHEEL_COLORS = [
+  "#8ea8ff",
+  "#566b9e",
+  "#9aadd8",
+  "#485a86",
+  "#b0bee0",
+  "#6f84b7",
+  "#7890c5",
+  "#435574",
+  "#a4b5dc",
+  "#6177a7"
+];
+
+
+/* ==================================================
+   ARMAZENAMENTO PROTEGIDO
+   CORREÇÃO: getItem/setItem podem lançar exceção (modo privado,
+   cota cheia, acesso bloqueado). Agora nunca quebram o fluxo.
+   ================================================== */
+
+function storageGet(key) {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function storageSet(key, value) {
+  try {
+    localStorage.setItem(key, value);
+    return true;
+  } catch (error) {
+    console.warn("[Storage] Não foi possível salvar:", error);
+    return false;
+  }
+}
+
+
 /* ==================================================
    ESTADO
    ================================================== */
@@ -30,13 +70,27 @@ let data;
 
 try {
   data =
-    JSON.parse(localStorage.getItem(KEY) || "null") ||
+    JSON.parse(storageGet(KEY) || "null") ||
     structuredClone(defaultData);
 } catch {
   data = structuredClone(defaultData);
 }
 
+if (
+  !data ||
+  typeof data.categories !== "object" ||
+  data.categories === null
+) {
+  data = structuredClone(defaultData);
+}
+
 let selectedCategory = "Problemas / Dúvidas";
+
+if (!(selectedCategory in data.categories)) {
+  selectedCategory =
+    Object.keys(data.categories)[0] || selectedCategory;
+}
+
 let lastWheelSignature = "";
 let spinning = false;
 let currentRotation = 0;
@@ -63,7 +117,8 @@ async function updateRichPresence(details) {
       }
     );
 
-    const result = await response.json();
+    // Resposta que não é JSON não deve parecer "bridge indisponível"
+    const result = await response.json().catch(() => ({}));
 
     if (!response.ok || !result.success) {
       console.error(
@@ -115,7 +170,7 @@ const resetCycleButton = document.querySelector("#resetCycle");
    ================================================== */
 
 function save() {
-  localStorage.setItem(KEY, JSON.stringify(data));
+  storageSet(KEY, JSON.stringify(data));
 }
 
 
@@ -128,8 +183,7 @@ function getCycleKey(category) {
 }
 
 function getCycle(category) {
-  const key = getCycleKey(category);
-  const stored = localStorage.getItem(key);
+  const stored = storageGet(getCycleKey(category));
 
   if (!stored) {
     return [];
@@ -144,10 +198,26 @@ function getCycle(category) {
 }
 
 function saveCycle(category, cycle) {
-  localStorage.setItem(
+  storageSet(
     getCycleKey(category),
     JSON.stringify(cycle)
   );
+}
+
+/* CORREÇÃO: fonte única da verdade para a roleta E para o sorteio.
+   Antes, a roleta desenhava as 5 primeiras opções (inclusive as já
+   usadas) e o sorteio escolhia entre as 5 primeiras DISPONÍVEIS,
+   então o ponteiro podia parar num setor diferente do resultado. */
+function getWheelOptions() {
+  const options =
+    data.categories[selectedCategory] || [];
+
+  const cycle =
+    getCycle(selectedCategory);
+
+  return options
+    .filter(option => !cycle.includes(option))
+    .slice(0, MAX_VISIBLE);
 }
 
 function resetCycle() {
@@ -230,11 +300,8 @@ function hideResultActions() {
 function renderWheelNames() {
   if (!wheel) return;
 
-  const options =
-    data.categories[selectedCategory] || [];
-
   const visibleOptions =
-    options.slice(0, 5);
+    getWheelOptions();
 
   const signature =
     `${selectedCategory}|${visibleOptions.join("\u001f")}`;
@@ -249,10 +316,10 @@ function renderWheelNames() {
     .querySelectorAll(".wheel-label")
     .forEach(label => label.remove());
 
-const totalSectors =
-  visibleOptions.length;
+  const totalSectors =
+    visibleOptions.length;
 
-if (totalSectors === 0) {
+  if (totalSectors === 0) {
     wheel.style.background =
       "radial-gradient(circle, #171c25 0%, #0c1016 100%)";
 
@@ -323,24 +390,6 @@ if (totalSectors === 0) {
     wheel.appendChild(label);
   });
 }
-
-
-/* ==================================================
-   CORES DA ROLETA
-   ================================================== */
-
-const WHEEL_COLORS = [
-  "#8ea8ff",
-  "#566b9e",
-  "#9aadd8",
-  "#485a86",
-  "#b0bee0",
-  "#6f84b7",
-  "#7890c5",
-  "#435574",
-  "#a4b5dc",
-  "#6177a7"
-];
 
 
 /* ==================================================
@@ -472,6 +521,10 @@ if (addForm) {
       return;
     }
 
+    if (!Array.isArray(data.categories[selectedCategory])) {
+      data.categories[selectedCategory] = [];
+    }
+
     if (data.categories[selectedCategory].includes(item)) {
       alert("Esta opção já existe.");
       return;
@@ -520,26 +573,18 @@ if (spinButton) {
       return;
     }
 
-    const options =
-      data.categories[selectedCategory] || [];
+    // Garante que a roleta desenhada é a mesma usada no sorteio
+    renderWheelNames();
 
-    const cycle =
-      getCycle(selectedCategory);
+    const visibleAvailable =
+      getWheelOptions();
 
-    const available =
-      options.filter(option =>
-        !cycle.includes(option)
-      );
-
-    if (!available.length) {
+    if (!visibleAvailable.length) {
       alert(
         "Não há opções disponíveis. Inicie um novo ciclo."
       );
       return;
     }
-
-    const visibleAvailable =
-      available.slice(0, 5);
 
     const selectedIndex =
       Math.floor(
@@ -559,8 +604,15 @@ if (spinButton) {
         sectorSize / 2
       );
 
-    currentRotation +=
-      1440 + targetAngle;
+    /* CORREÇÃO: antes era "currentRotation += 1440 + targetAngle",
+       que somava o ângulo ao que já estava acumulado; a partir do
+       2º giro o ponteiro parava no setor errado. Agora a base é
+       normalizada para múltiplos de 360° antes de somar. */
+    const base =
+      currentRotation - (currentRotation % 360);
+
+    currentRotation =
+      base + 1440 + targetAngle;
 
     spinning = true;
     spinButton.disabled = true;
